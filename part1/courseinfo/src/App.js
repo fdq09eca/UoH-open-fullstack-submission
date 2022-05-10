@@ -1,6 +1,5 @@
 const Header = (props) => (<h1>{props.course.name}</h1>)
 const Part = (props) => {
-  console.log(props.name)
   return (<p>{props.name} {props.exercises}</p>)
 }
 
