@@ -23,10 +23,7 @@ export function Countries({ countries, searchCountries }) {
         return <CountryViewDetail country={results[0]} />;
     }
     if (results.length <= 10) {
-
-        return results
-            .map(country => country['show'] = false)
-            .map(country => <CountryViewBreif key={country.name.common} country={country} />);
+        return results.map(country => <CountryViewBreif key={country.name.common} country={country} />);
     }
     return <p>Too many matches, specify another filter</p>;
 }
