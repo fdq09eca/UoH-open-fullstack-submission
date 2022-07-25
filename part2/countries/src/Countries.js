@@ -13,6 +13,7 @@ export function Countries({ countries, searchCountries }) {
             .slice(0, 10)
             .map(country => <CountryViewBreif key={country.name.common} country={country} />);
     }
+
     const results = countries.filter(country => filterCountries(country, searchCountries));
 
     if (results.length === 0) {
@@ -22,8 +23,10 @@ export function Countries({ countries, searchCountries }) {
         return <CountryViewDetail country={results[0]} />;
     }
     if (results.length <= 10) {
-        results.map(country => country['show'] = false);
-        return results.map(country => <CountryViewBreif key={country.name.common} country={country} />);
+
+        return results
+            .map(country => country['show'] = false)
+            .map(country => <CountryViewBreif key={country.name.common} country={country} />);
     }
     return <p>Too many matches, specify another filter</p>;
 }
