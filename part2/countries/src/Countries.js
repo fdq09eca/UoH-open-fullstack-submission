@@ -7,6 +7,12 @@ function filterCountries(country, searchCountries) {
 
 export function Countries({ countries, searchCountries }) {
 
+    if (searchCountries === '') {
+        return countries
+            .sort((a, b) => (a.name.common > b.name.common) ? 1 : ((b.name.common > a.name.common) ? -1 : 0))
+            .slice(0, 10)
+            .map(country => <CountryViewBreif key={country.name.common} country={country} />);
+    }
     const results = countries.filter(country => filterCountries(country, searchCountries));
 
     if (results.length === 0) {
