@@ -1,10 +1,10 @@
 import React from 'react'
 
 function InputNumber({ value, onChange }) {
-    return <>number: <input value={value} onChange={onChange} /></>
+    return <p>number: <input value={value} onChange={onChange} /></p>
 }
 function InputName({ value, onChange }) {
-    return <>name: <input value={value} onChange={onChange} /></>
+    return <p>name: <input value={value} onChange={onChange} /></p>
 }
 
 function PersonForm({ onSubmit, nameValue, numberValue, onChangeNewName, onChangeNewNumber }) {
@@ -12,9 +12,7 @@ function PersonForm({ onSubmit, nameValue, numberValue, onChangeNewName, onChang
         <h2>add a new</h2>
         <InputName value={nameValue} onChange={onChangeNewName} />
         <InputNumber value={numberValue} onChange={onChangeNewNumber} />
-        <div>
-            <button type="submit">add</button>
-        </div>
+        <button type="submit">add</button>
     </form>
 }
 

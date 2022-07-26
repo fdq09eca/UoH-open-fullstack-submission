@@ -1,29 +1,31 @@
-import { useState, useEffect  } from 'react'
-import axios from 'axios'
+import './index.css'
+import { useState, useEffect } from 'react'
 import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
+import PersonService from './PersonService'
 
 
+const newPerson = (newName, newNumber) => ({ name: newName, number: newNumber })
+
+function Message({ message, messageClass }) {
+  if (message === null) {
+    return null
+  }
+  return <div className={messageClass}>{message}</div>
+}
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [showName, setShowName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [message, setMessage] = useState(null)
+  const [messageCls, setMessageCls] = useState('good_message')
 
-  function hook() {
-    console.log('effect')
+  const getPersons = () => { PersonService.getAll().then(setPersons) }
 
-    const eventHandler = response => {
-      console.log('promise fulfilled')
-      setPersons(response.data)
-    }
-    
-    axios.get('http://localhost:3001/persons').then(eventHandler)
-  }
-
-  useEffect(hook, [])
+  useEffect(getPersons, [])
 
   function onChangeNewName(event) {
     setNewName(event.target.value)
@@ -34,28 +36,63 @@ const App = () => {
   }
 
   function onChangeNewNumber(event) {
-    console.log(event.target.value)
     setNewNumber(event.target.value)
   }
 
-  function resetInputs() {
+  const resetInputs = () => {
     setNewName('')
     setNewNumber('')
   }
 
+  const setNofication = (message, isGoodMessage) => {
+    setMessage(message)
+    setMessageCls(isGoodMessage ? 'good_message' : 'bad_message')
+    setTimeout(
+      () => {
+        setMessage(null)
+      }, 5000
+    )
+  }
+
   function AddPerson(event) {
     event.preventDefault()
-    if (persons.map(person => person.name).includes(newName)) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }))
+    if (newName === '' || newNumber === '') {
+      alert('Name and number are required')
+      return
     }
-    resetInputs()
+
+    const personExists = () => {
+      getPersons()
+      return persons.map(person => person.name).includes(newName)
+    }
+
+    if (personExists()) {
+      if (window.confirm(`${newName} exists already, replace the old number with a new one?`)) {
+        const person = persons.find(person => person.name === newName)
+        PersonService.replace(person.id, newPerson(newName, newNumber))
+        .catch(error => setNofication(`Information of ${person.name} has been removed from server`, false))
+        .finally(getPersons);
+      }
+    } else {
+      const onSuccess = (person) => {
+        setPersons(persons.concat(person))
+        setNofication(`Added ${person.name}`, true)
+        resetInputs()
+      }
+
+      const onError = (error) => { console.log(error) }
+
+      PersonService.create(newPerson(newName, newNumber)).then(onSuccess, onError)
+    }
+
   }
+
+
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Message message={message} messageClass={messageCls} />
       <Filter value={showName} onChange={onChangeShowName} />
       <PersonForm
         onSubmit={AddPerson}
@@ -66,9 +103,13 @@ const App = () => {
       <h2>Numbers</h2>
       <Persons
         persons={persons}
-        predicateShowName={showName} />
+        setPersons={setPersons}
+        predicateShowName={showName}
+      />
     </div>
   )
 }
 
 export default App
+
+
