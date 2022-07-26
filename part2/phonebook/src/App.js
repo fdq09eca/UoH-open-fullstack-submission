@@ -4,16 +4,10 @@ import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
 import PersonService from './PersonService'
+import Message from './Message'
 
 
 const newPerson = (newName, newNumber) => ({ name: newName, number: newNumber })
-
-function Message({ message, messageClass }) {
-  if (message === null) {
-    return null
-  }
-  return <div className={messageClass}>{message}</div>
-}
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -70,8 +64,8 @@ const App = () => {
       if (window.confirm(`${newName} exists already, replace the old number with a new one?`)) {
         const person = persons.find(person => person.name === newName)
         PersonService.replace(person.id, newPerson(newName, newNumber))
-        .catch(error => setNofication(`Information of ${person.name} has been removed from server`, false))
-        .finally(getPersons);
+          .catch(error => setNofication(`Information of ${person.name} has been removed from server`, false))
+          .finally(getPersons);
       }
     } else {
       const onSuccess = (person) => {
