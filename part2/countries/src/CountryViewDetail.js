@@ -18,7 +18,7 @@ export function CountryViewDetail({ country }) {
         <h2>{country.name.common}</h2>
         <p>capital: {country.capital}</p>
         <p>area: {country.area}</p>
-        <h3>Langauge</h3>
+        <h3>Langauges</h3>
         <Languages country={country} />
         <CountryFlag country={country} />
         <Weather country={country} />
