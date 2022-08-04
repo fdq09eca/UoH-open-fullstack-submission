@@ -27,6 +27,17 @@ let persons = [
 
 ]
 
+app.get('/api/person/:id', (req, res) => {
+    const id = req.params.id
+    const person = persons.find(p => p.id === Number(id))
+    if (person) {
+        res.json(person)
+    } else {
+        res.statusMessage = 'Person id not found'
+        res.status(404).end()
+    }
+})
+
 app.get('/info', (request, response) => {
     const currentTime = new Date()
     response.send(`<p>Phonebook has info for ${persons.length} people.</p><p>${currentTime.toString()}</p>`)
