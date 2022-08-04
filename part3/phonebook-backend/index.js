@@ -26,6 +26,17 @@ let persons = [
 
 
 ]
+app.delete('/api/person/:id', (req, res) =>{
+    const id = Number(req.params.id)
+    if (!persons.find(p => p.id === id)){
+        res.statusMessage = "Person id not found."
+        res.status(404).end()
+        return
+    }   
+
+    persons = persons.filter(person => person.id !== id)
+    res.status(204).end()
+})
 
 app.get('/api/person/:id', (req, res) => {
     const id = req.params.id
@@ -51,6 +62,8 @@ app.get('/', (request, response) => {
 app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
+
+
 
 const PORT = 3001
 app.listen(PORT, () => {
