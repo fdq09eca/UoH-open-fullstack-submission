@@ -31,7 +31,6 @@ app.delete('/api/person/:id', (req, res) =>{
     if (!persons.find(p => p.id === id)){
         res.statusMessage = "Person id not found."
         res.status(404).end()
-        return
     }   
 
     persons = persons.filter(person => person.id !== id)
