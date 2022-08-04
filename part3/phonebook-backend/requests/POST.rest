@@ -1,0 +1,34 @@
+### add a person
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{     
+        "name": "testing_person",
+        "number": "999999999"
+}
+
+### add a person: Duplicated name, should return error
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{     
+        "name": "testing_person",
+        "number": "999999999"
+}
+
+### add a person, missing name
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{     
+        "number": "999999999"
+}
+
+### add a person, missing number
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
+
+{     
+        "name": "testing_person"
+}
+

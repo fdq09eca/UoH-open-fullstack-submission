@@ -1,5 +1,17 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+
+
+const unknownEndpoint = (request, response) => { // after all routes is searched.
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(express.json()) // to parse received data as json.
+
+morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body')) // to log requests.
+
 
 let persons = [
 
@@ -26,6 +38,35 @@ let persons = [
 
 
 ]
+
+const getNewId = () => {
+    const maxId = persons.reduce((max, p) => Math.max(max, p.id), 0)
+    return maxId + 1
+}
+
+const nameExists = (name) => {
+    return persons.find(p => p.name === name)
+}
+
+app.post("/api/persons", (req, res) => {
+    const person = req.body
+    if (!person.name || !person.number) {
+        res.status(400).json({ error: "name or number missing" })
+        return
+    }
+
+    if (nameExists(person.name)) {
+        res.status(400).json({ error: "name already exists" })
+        return
+    }
+    
+    person.id = getNewId()
+    persons = persons.concat(person)
+    res.statusMessage = "Person added"
+    res.json(person)
+    return
+})
+
 app.delete('/api/person/:id', (req, res) =>{
     const id = Number(req.params.id)
     if (!persons.find(p => p.id === id)){
@@ -63,6 +104,8 @@ app.get('/api/persons', (request, response) => {
 })
 
 
+
+app.use(unknownEndpoint) // to parse received data as json.
 
 const PORT = 3001
 app.listen(PORT, () => {
