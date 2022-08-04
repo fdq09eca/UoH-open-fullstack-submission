@@ -1,0 +1,13 @@
+### all persons
+GET http://localhost:3001/api/persons
+
+### person by id (id exists)
+
+GET http://localhost:3001/api/person/1
+
+### person by id (id does not exist)
+
+GET http://localhost:3001/api/person/10
+
+
+
